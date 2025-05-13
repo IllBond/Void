@@ -6,7 +6,7 @@ public static class ServiceLocator
 {
     private static readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
-    public static void Register<T>(T instance)
+    public static void Registration<T>(T instance)
     {
         var type = typeof(T);
         if (_services.ContainsKey(type))

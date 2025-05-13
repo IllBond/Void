@@ -4,8 +4,8 @@ public class ServicesRegistrator
 {
     [SerializeField] private LogoLoaderService _logoLoaderService;
 
-    public void Registration() 
+    public void StartRegistration() 
     {
-        ServiceLocator.Register(_logoLoaderService);
+        ServiceLocator.Registration(_logoLoaderService);
     }
 }
