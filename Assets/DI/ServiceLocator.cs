@@ -2,49 +2,52 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class ServiceLocator
+namespace FinisOmnibus.Core
 {
-    private static readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
-
-    public static void Registration<T>(T instance)
+    public static class ServiceLocator
     {
-        var type = typeof(T);
-        if (_services.ContainsKey(type))
-        {
-            Debug.LogWarning($"Service {type} already registered.");
-            return;
-        }
-        _services[type] = instance;
-    }
+        private static readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
-    public static void RegisterNew<T>() where T : new()
-    {
-        var type = typeof(T);
-        if (_services.ContainsKey(type))
+        public static void Registration<T>(T instance)
         {
-            Debug.LogWarning($"Service {type} already registered.");
-            return;
+            var type = typeof(T);
+            if (_services.ContainsKey(type))
+            {
+                Debug.LogWarning($"Service {type} already registered.");
+                return;
+            }
+            _services[type] = instance;
         }
-        _services[type] = new T();
-    }
+
+        public static void RegisterNew<T>() where T : new()
+        {
+            var type = typeof(T);
+            if (_services.ContainsKey(type))
+            {
+                Debug.LogWarning($"Service {type} already registered.");
+                return;
+            }
+            _services[type] = new T();
+        }
 
 
-    public static T Get<T>()
-    {
-        var type = typeof(T);
-        if (_services.TryGetValue(type, out var service))
+        public static T Get<T>()
         {
-            return (T)service;
+            var type = typeof(T);
+            if (_services.TryGetValue(type, out var service))
+            {
+                return (T)service;
+            }
+            else
+            {
+                Debug.LogError($"Service {type} not found! Did you forget to register it?");
+                return default;
+            }
         }
-        else
-        {
-            Debug.LogError($"Service {type} not found! Did you forget to register it?");
-            return default;
-        }
-    }
 
-    public static void Clear()
-    {
-        _services.Clear();
+        public static void Clear()
+        {
+            _services.Clear();
+        }
     }
 }

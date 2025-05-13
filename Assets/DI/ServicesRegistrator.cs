@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class ServicesRegistrator
+namespace FinisOmnibus.Core
 {
-    [SerializeField] private LogoLoaderService _logoLoaderService;
-
-    public void StartRegistration() 
+    public class ServicesRegistrator : MonoBehaviour
     {
-        ServiceLocator.Registration(_logoLoaderService);
+        [SerializeField] private LogoLoaderService _logoLoaderService;
+
+        public void StartRegistration()
+        {
+            ServiceLocator.Registration(_logoLoaderService);
+        }
     }
 }

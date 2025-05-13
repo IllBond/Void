@@ -1,32 +1,39 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Bootstrap : MonoBehaviour
+namespace FinisOmnibus.Core
 {
-    [SerializeField] private string _nextSceneName;
-    private ServicesRegistrator _servicesRegistrator;
-    private LogoLoaderService _logoLoaderService;
-    private async void Start()
+    public class Bootstrap : MonoBehaviour, IDisposable
     {
-        ServicesRegistrator _servicesRegistrator = new ServicesRegistrator();
-        _servicesRegistrator.StartRegistration();
+        [SerializeField] private string _nextSceneName;
+        [SerializeField] private ServicesRegistrator _servicesRegistrator;
+        private LogoLoaderService _logoLoaderService;
+        private void Start()
+        {
+            _servicesRegistrator.StartRegistration();
 
-        _logoLoaderService = ServiceLocator.Get<LogoLoaderService>();
-        _logoLoaderService.RunStartLogo();
-        await Initialize();
-        LoadNextScene();
-    }
+            _logoLoaderService = ServiceLocator.Get<LogoLoaderService>();
+            _logoLoaderService.RunStartLogo();
+            _logoLoaderService.OnAllVideosFinished += LoadNextScene;
 
-    
-    private async Task Initialize()
-    {
-        await Task.Delay(2000);
-        Debug.Log("Initializtion COmplete");
-    }
+            _ = Initialize();
+        }
 
-    private void LoadNextScene()
-    {
-        SceneManager.LoadScene(_nextSceneName);
+
+        private async Task Initialize()
+        {
+            await Task.Delay(2000);
+            Debug.Log("Initializtion Complete");
+        }
+
+        private void LoadNextScene()
+        {
+            SceneManager.LoadScene(_nextSceneName);
+        }
+
+        public void Dispose() =>
+            _logoLoaderService.OnAllVideosFinished -= LoadNextScene;
     }
 }

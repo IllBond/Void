@@ -1,46 +1,48 @@
-
 using System;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class LogoLoaderService : MonoBehaviour
+namespace FinisOmnibus.Core
 {
-    [SerializeField] private VideoPlayer _player;
-    [SerializeField] private VideoClip[] _clips;
-
-    public event Action OnAllVideosFinished;
-    private int _currentClipIndex = 0;
-
-    public void RunStartLogo()
+    public class LogoLoaderService : MonoBehaviour
     {
-        if (_clips == null || _clips.Length == 0)
-            return;
+        [SerializeField] private VideoPlayer _player;
+        [SerializeField] private VideoClip[] _clips;
 
-        _player.loopPointReached += OnVideoFinished;
-        PlayClip(_currentClipIndex);
-    }
+        public event Action OnAllVideosFinished;
+        private int _currentClipIndex = 0;
 
-    private void PlayClip(int index)
-    {
-        if (index >= 0 && index < _clips.Length)
+        public void RunStartLogo()
         {
-            _player.clip = _clips[index];
-            _player.Play();
-        }
-    }
+            if (_clips == null || _clips.Length == 0)
+                return;
 
-    private void OnVideoFinished(VideoPlayer vp)
-    {
-        _currentClipIndex++;
-
-        if (_currentClipIndex < _clips.Length)
-        {
+            _player.loopPointReached += OnVideoFinished;
             PlayClip(_currentClipIndex);
         }
-        else
+
+        private void PlayClip(int index)
         {
-            _player.loopPointReached -= OnVideoFinished;
-            OnAllVideosFinished?.Invoke();
+            if (index >= 0 && index < _clips.Length)
+            {
+                _player.clip = _clips[index];
+                _player.Play();
+            }
+        }
+
+        private void OnVideoFinished(VideoPlayer vp)
+        {
+            _currentClipIndex++;
+
+            if (_currentClipIndex < _clips.Length)
+            {
+                PlayClip(_currentClipIndex);
+            }
+            else
+            {
+                _player.loopPointReached -= OnVideoFinished;
+                OnAllVideosFinished?.Invoke();
+            }
         }
     }
 }
